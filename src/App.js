@@ -8,7 +8,9 @@ import Checkout from "./routes/checkout/checkout.component";
 import Home from "./routes/home/home.component";
 import Navigation from "./routes/navigation/navigation.component";
 import Shop from "./routes/shop/shop.component";
-import { setCurrentUser } from "./store/user/user.action";
+
+import { setCurrentUser } from "./store/user/user.reducer";
+
 import {
   createUserDocumentFromAuth,
   onAuthStateChangedListener,
@@ -22,11 +24,14 @@ const App = () => {
       if (user) {
         createUserDocumentFromAuth(user);
       }
-      dispatch(setCurrentUser(user));
+      const pickedUser =
+        user && (({ accessToken, email }) => ({ accessToken, email }))(user);
+
+      dispatch(setCurrentUser(pickedUser));
     });
 
     return unsubscribe;
-  }, [dispatch]);
+  });
 
   return (
     <Routes>
